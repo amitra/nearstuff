@@ -410,13 +410,20 @@ define(["require", "exports", "esri/core/tsSupport/declareExtendsHelper", "esri/
         };
         DisplayLookupResults.prototype._getFeatureCount = function (results) {
             var count = 0;
+            var covidCount = 0;
             results && results.forEach(function (result) {
                 if (result.features && result.features.length) {
                     count += result.features.length;
+                    for( var feat in result.features){
+                        covidCount += parseInt(result.features[feat].attributes.ConfirmedCaseCount);
+                    }
+                   
                 }
             });
             var countString = i18n.count + ": " + count;
+            countString += " Total covid cases : " + covidCount;
             return count < 2 || !this.config.showResultCount ? null : widget_1.tsx("span", { class: this.classes('total-count') }, countString);
+        
         };
         DisplayLookupResults.prototype._clearDirections = function () {
             var _this = this;
@@ -528,6 +535,8 @@ define(["require", "exports", "esri/core/tsSupport/declareExtendsHelper", "esri/
                     var blookup = b.attributes.lookupDistance ? parseFloat(b.attributes.lookupDistance.replace(/[,]/g, '')) : null;
                     return alookup - blookup;
                 });
+
+                console.log(features);
             }
         };
         DisplayLookupResults.prototype.clearResults = function () {
